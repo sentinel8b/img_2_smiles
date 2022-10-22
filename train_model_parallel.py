@@ -1,6 +1,3 @@
-# Basic Config 
-raid_dir = '/raid/qlql323/img2smiles/'
-train_size = 1000000
 # Model config
 img_embedding_dim = 232
 d_model = 512
@@ -29,7 +26,6 @@ import tensorflow as tf
 import torchvision
 from torchvision import datasets, models, transforms
 import torchvision.transforms as T
-from sklearn.model_selection import train_test_split
 from torchvision.models import EfficientNet_B3_Weights
 
 import transformer_model_parallel
@@ -59,11 +55,6 @@ print("Import complete")
 if 'device' not in globals():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Read Data
-train_data = pd.read_csv(raid_dir + '1mil_train.csv')
-
-train_dataset = train_data[:train_size]
-val_dataset = train_data[train_size:]
 
 # Tokenization
 with open('selfie_tokenizer.pickle', 'rb') as handle:
@@ -93,8 +84,6 @@ train_data_set = img2selfie_dataset(raid_dir + train_path, train_dataset, train_
 train_loader = DataLoader(train_data_set, batch_size = 512, shuffle = True, num_workers = 16, pin_memory = True)
 val_data_set = img2selfie_dataset(raid_dir + train_path, val_dataset, val_cap_vec)
 val_loader = DataLoader(val_data_set, batch_size = 512, shuffle = False, num_workers = 16, pin_memory = True)
-
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu") 
 
 torch.cuda.manual_seed_all(629)
 
